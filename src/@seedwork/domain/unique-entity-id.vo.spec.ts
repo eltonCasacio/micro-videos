@@ -1,16 +1,23 @@
 import InvalidUuidError from '../errors/invalid-uuid.error';
 import UniqueEntityId from './unique-entity-id.vo';
 
+function spyValidateMethod() {
+    return jest.spyOn(UniqueEntityId.prototype as any, 'validate')
+}
+
 describe('UniqueEntityId Unit Tests', () => {
 
+    beforeEach(() => jest.clearAllMocks())
+
+
     test('should throw error when uuid is invalid', () => {
-        const validateSpy = jest.spyOn(UniqueEntityId.prototype as any, 'validate')
+        const validateSpy = spyValidateMethod()
         expect(() => new UniqueEntityId('fake id')).toThrowError(new InvalidUuidError())
         expect(validateSpy).toHaveBeenCalled()
     })
 
     test('constructor', () => {
-        const validateSpy = jest.spyOn(UniqueEntityId.prototype as any, 'validate')
+        const validateSpy = spyValidateMethod()
         const uuid = 'e9b981e7-77b7-4a3f-8754-85d1e4574d75'
 
         let uniqueEntityId = new UniqueEntityId()
