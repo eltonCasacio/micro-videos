@@ -5,6 +5,4 @@ npx jest --init
 npm install @swc/core @swc/jest --save-dev
 npm install --save-dev @types/lodash
 npm i --save-dev @types/lodash
-
-###### GITHUB #######
-git repo create eltoncasacio/micro-videos-typescript => cria repositorio
+npm install uuid @types/uuid --save-dev
