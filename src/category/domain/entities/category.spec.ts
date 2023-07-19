@@ -2,6 +2,17 @@ import { Category, CategoryProps } from './category'
 import { omit } from 'lodash'
 import UniqueEntityId from '../../../@seedwork/domain/value-objects/unique-entity-id.vo';
 
+function spyUpdateMethod() {
+    return jest.spyOn(Category.prototype as any, 'update')
+}
+
+function spyActivateMethod() {
+    return jest.spyOn(Category.prototype as any, 'activate')
+}
+
+function spyDeactivateMethod() {
+    return jest.spyOn(Category.prototype as any, 'deactivate')
+}
 
 describe("Category Unit Tests", () => {
     test('constructor of category', () => {
@@ -94,13 +105,49 @@ describe("Category Unit Tests", () => {
         let category = new Category({ name: 'any_name' })
         expect(category.created_at).toBeInstanceOf(Date)
 
-        // category = new Category({ name: 'any_name', is_active: false })
-        // expect(category.is_active).toBeFalsy()
+        category = new Category({ name: 'any_name', is_active: false })
+        expect(category.is_active).toBeFalsy()
 
-        // category['is_active'] = true
-        // expect(category.is_active).toBeTruthy()
+        category['is_active'] = true
+        expect(category.is_active).toBeTruthy()
 
-        // category['is_active'] = false
-        // expect(category.is_active).toBeFalsy()
+        category['is_active'] = false
+        expect(category.is_active).toBeFalsy()
+    })
+
+    test('should update name and description', () => {
+        const category = new Category({ name: 'any_name' })
+
+        category.update('other_name', 'any_description')
+        expect(category.name).toBe('other_name')
+        expect(category.description).toBe('any_description')
+    })
+
+    test('should throw error if call update without name', () => {
+        const category = new Category({ name: 'any_name' })
+        const updateSpy = spyUpdateMethod()
+
+        expect(() => category.update('', 'any_description')).toThrowError("name is required")
+        expect(category.name).toBe('any_name')
+        expect(category.description).toBeFalsy()
+        expect(updateSpy).toHaveBeenCalledTimes(1)
+    })
+
+    test('should activate category', () => {
+        const category = new Category({ name: 'any_name' })
+        const activateSpy = spyActivateMethod()
+
+        category.activate()
+        expect(activateSpy).toHaveBeenCalledTimes(1)
+        expect(category.is_active).toBeTruthy()
+    })
+
+    test('should deactivate category', () => {
+        const category = new Category({ name: 'any_name' })
+        const deactivateSpy = spyDeactivateMethod()
+
+        category.deactivate()
+        expect(deactivateSpy).toHaveBeenCalledTimes(1)
+        expect(category.is_active).toBeFalsy()
     })
 })
